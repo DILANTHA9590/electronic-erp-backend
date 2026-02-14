@@ -26,7 +26,6 @@ import { ScheduleModule } from '@nestjs/schedule';
         database: configService.get('DB_NAME'),
         autoLoadEntities: true,
         synchronize: false,
-        migrations: ['dist/migrations/*.js'],
         logging: ['query', 'error'],//dev
     // logging: ['error'],//prodction
         retryAttempts: 5, 
