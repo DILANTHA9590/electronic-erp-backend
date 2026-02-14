@@ -43,7 +43,7 @@ export class User {
   token_version: number;
 
   @Column({ nullable: true })
-  salt?: string;
+  salt?: number;
 
   @CreateDateColumn()
   created_at: Date;
