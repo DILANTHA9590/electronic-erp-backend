@@ -9,8 +9,6 @@ import {
 import { USER_STATUS } from './user-status.enum';
 
 @Entity('users')
-@Index(['email'])
-@Index(['user_name'])
 export class User {
 
   @PrimaryGeneratedColumn('uuid')
