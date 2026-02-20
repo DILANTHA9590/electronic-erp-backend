@@ -19,11 +19,11 @@ import { ScheduleModule } from '@nestjs/schedule';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        host: configService.get('DB_HOST'),
-        port: Number(configService.get('DB_PORT')),
-        username: configService.get('DB_USERNAME'),
-        password: configService.get('DB_PASS'),
-        database: configService.get('DB_NAME'),
+        host: configService.getOrThrow('DB_HOST'),
+        port: Number(configService.getOrThrow('DB_PORT')),
+        username: configService.getOrThrow('DB_USERNAME'),
+        password: configService.getOrThrow('DB_PASS'),
+        database: configService.getOrThrow('DB_NAME'),
         autoLoadEntities: true,
         synchronize: false,
         logging: ['query', 'error'],//dev
