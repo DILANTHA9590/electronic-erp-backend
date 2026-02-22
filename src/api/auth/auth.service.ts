@@ -9,6 +9,9 @@ import { AuthDto } from './dto/login-dto';
 import { USER_STATUS } from '../user/entities/user-status.enum';
 import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
+import { TokenPayload } from './interfaces/auth.interface';
+import { Res } from '@nestjs/common';
+
 
 @Injectable()
 export class AuthService {
@@ -37,9 +40,9 @@ export class AuthService {
     throw new NotFoundException("Inavlid username or email")
   }
 
-  if (!existingUser.isVerified) {
-  throw new ForbiddenException('Please verify your email first');
-}
+//   if (!existingUser.isVerified) {
+//   throw new ForbiddenException('Please verify your email first');
+// }
 
 
  if (existingUser.user_status === USER_STATUS.BLOCKED) {
@@ -53,16 +56,13 @@ const checkPassowrd = argon2.verify(password,customPassword)
 if(!checkPassowrd){
   throw new NotFoundException("Invalid password")
 }
+ const {id ,first_name,last_name,email,token_version,user_status} = existingUser
 
+ const {refreshToken,accessToken} = this.genarateTokens({id ,first_name,last_name,email,token_version,user_status})
 
-const {id ,first_name,last_name,email,token_version,user_status} = existingUser
-
-const accessToken  = this.jwtService.sign({
-  sub:id,
-  first_name,
-  last_name,email,
-  token_version,user_status
-})
+ 
+console.log("refresh token",refreshToken)
+console.log("accesstoken",accessToken)
 
  return {
     success: true,
@@ -73,29 +73,32 @@ const accessToken  = this.jwtService.sign({
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
   }
+
+
+private genarateTokens(existingUser:TokenPayload){
+
+  //genarate access token 
+const {id ,first_name,last_name,email,token_version,user_status} = existingUser
+
+const accessToken  = this.jwtService.sign({
+  sub:id,
+  first_name,
+  last_name,email,
+  token_version,user_status
+})
+
+const refreshToken = this.jwtService.sign(
+  { sub: id, token_version },
+  {
+    expiresIn: '7d', 
+  },
+);
+
+return {accessToken ,refreshToken}
+  }
+
+
 
   findAll() {
     return `This action returns all auth`;
