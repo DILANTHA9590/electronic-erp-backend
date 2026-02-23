@@ -11,6 +11,8 @@ import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { TokenPayload } from './interfaces/auth.interface';
 import { Res } from '@nestjs/common';
+import { LoginResponseDto } from './dto/login-repose-dto';
+import { ApiResponseDto } from 'src/common/dto/api-respose-dto';
 
 
 @Injectable()
@@ -25,7 +27,7 @@ export class AuthService {
       ){}
 
 
- async loginUser(authDto: AuthDto) {
+ async loginUser(authDto: AuthDto):Promise<ApiResponseDto<LoginResponseDto>> {
 
   const {login,password} =  authDto
 
@@ -51,7 +53,7 @@ export class AuthService {
 
 const customPassword =  password + this.configService.getOrThrow<string>('PASSWORD_PEPPER')
 
-const checkPassowrd = argon2.verify(password,customPassword)
+const checkPassowrd = await argon2.verify(existingUser.password, customPassword)
 
 if(!checkPassowrd){
   throw new NotFoundException("Invalid password")
@@ -62,12 +64,18 @@ if(!checkPassowrd){
 
  
 console.log("refresh token",refreshToken)
+console.log("-------------------------------------------------------------------------------------------")
+console.log("-------------------------------------------------------------------------------------------")
 console.log("accesstoken",accessToken)
 
  return {
     success: true,
     message: "Login successful",
-    accessToken
+    data:{
+      accessToken,
+      refreshToken,
+    }
+ 
   };
 
 
@@ -75,10 +83,8 @@ console.log("accesstoken",accessToken)
 
   }
 
-
+  //genarate access token  and refsh token
 private genarateTokens(existingUser:TokenPayload){
-
-  //genarate access token 
 const {id ,first_name,last_name,email,token_version,user_status} = existingUser
 
 const accessToken  = this.jwtService.sign({
