@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/login-dto';
 import type { Response } from 'express';
@@ -6,6 +6,7 @@ import { Res } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ApiResponseDto } from 'src/common/dto/api-respose-dto';
 import { LoginResponseDto } from './dto/login-repose-dto';
+import { AuthGuard } from '@nestjs/passport';
 
 
 @Controller('auth')
@@ -41,10 +42,10 @@ export class AuthController {
    
   }
 }
-
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @UseGuards(AuthGuard('jwt'))
+  @Get("test")
+  findAll(@Req() {user:{sub}}) {
+    return sub
   }
 
   @Get(':id')

@@ -92,7 +92,12 @@ const accessToken  = this.jwtService.sign({
   first_name,
   last_name,email,
   token_version,user_status
-})
+},
+{
+    expiresIn: '7d', 
+  },
+
+)
 
 const refreshToken = this.jwtService.sign(
   { sub: id, token_version },
