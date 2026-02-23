@@ -1,17 +1,46 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/login-dto';
+import type { Response } from 'express';
+import { Res } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { ApiResponseDto } from 'src/common/dto/api-respose-dto';
+import { LoginResponseDto } from './dto/login-repose-dto';
 
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService,
+            private configService: ConfigService,
+  ) {}
+
 
   @Post('login')
   @HttpCode(HttpStatus.OK) // 200
-  create(@Body() createAuthDto:AuthDto) {
-    return this.authService.loginUser(createAuthDto);
+ async create(@Body() createAuthDto:AuthDto,
+  @Res({ passthrough: true }) res: Response):Promise<ApiResponseDto<LoginResponseDto>> {
+   const  respose = await this.authService.loginUser(createAuthDto);
+ const isProduction = this.configService.getOrThrow<string>("NODE_ENV") ==="production"
+//🔹 Set refresh token in HTTP-only cookie
+   res.cookie('refreshToken',respose.data.refreshToken,{
+    httpOnly:true,
+    secure:isProduction,
+    sameSite:isProduction ? 'strict' : 'lax',//🔴
+    maxAge: 7 * 24 * 60 * 60 * 1000,  
+    path:'api/v1/auth/refresh_token'
+   })
+
+   return {
+    success: true,
+    message: "Login successful",
+    
+    data:{
+    accessToken:respose.data.accessToken,
+    refreshToken:respose.data.refreshToken
+    }
+   
   }
+}
 
   @Get()
   findAll() {
