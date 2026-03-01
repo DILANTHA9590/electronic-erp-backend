@@ -114,7 +114,7 @@ return {accessToken ,refreshToken}
   }
 
 
-async setAccessToken(refreshToken:string){
+async setAccessToken(refreshToken:string):Promise<ApiResponseDto<{ accessToken: string }>>{
 
   if(!refreshToken) throw new UnauthorizedException()
 

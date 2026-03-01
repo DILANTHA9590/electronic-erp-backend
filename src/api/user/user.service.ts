@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getRandomValues } from 'crypto';
 import * as argon2 from 'argon2';
+import { ApiResponseDto } from 'src/common/dto/api-respose-dto';
 
 @Injectable()
 export class UserService {
@@ -16,7 +17,7 @@ export class UserService {
       private configService: ConfigService
     ){}
 
-async create(createUserDto: CreateUserDto) {
+async create(createUserDto: CreateUserDto):Promise<ApiResponseDto<null>>{
   const { email, user_name, password } = createUserDto;
 
   // 🔎 Check existing user (single DB query)
@@ -59,10 +60,10 @@ async create(createUserDto: CreateUserDto) {
   return {
     success: true,
     message: 'User created successfully',
+    data:null
+
   };
 }
-
-
 
 
   private generateFiveDigitNumber(): number {
@@ -71,7 +72,9 @@ async create(createUserDto: CreateUserDto) {
 
 
   findAll() {
-    return `This action returns all user`;
+
+
+    
   }
 
   findOne(id: number) {
