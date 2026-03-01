@@ -4,6 +4,8 @@ import { UserModule } from './api/user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
+import { RolesModule } from './api/roles/roles.module';
+
 
 
 @Module({
@@ -35,6 +37,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 
     UserModule,
     AuthModule,
+    RolesModule,
   ]
 
 })

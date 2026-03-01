@@ -41,9 +41,8 @@ export class AuthController {
     }
    
   }
+  
 }
-
-
 
 @Post('refresh_token')
 getRefreshTOken(@Req() req:any){
