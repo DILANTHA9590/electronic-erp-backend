@@ -4,9 +4,12 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  Index
+  Index,
+  ManyToOne,
+  JoinColumn
 } from 'typeorm';
 import { USER_STATUS } from './user-status.enum';
+import { Role } from 'src/api/roles/entities/role.entity';
 
 @Entity('users')
 export class User {
@@ -50,4 +53,7 @@ export class User {
 
   @UpdateDateColumn()
   updated_at: Date;
+  @ManyToOne(() => Role, role => role.users)
+ @JoinColumn({ name: 'role_id' })
+  role: Role;
 }
