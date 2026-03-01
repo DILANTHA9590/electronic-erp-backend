@@ -9,10 +9,11 @@ import { AuthDto } from './dto/login-dto';
 import { USER_STATUS } from '../user/entities/user-status.enum';
 import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
-import { TokenPayload } from './interfaces/auth.interface';
+import { accessToken, TokenPayload } from './interfaces/auth.interface';
 import { Res } from '@nestjs/common';
 import { LoginResponseDto } from './dto/login-repose-dto';
 import { ApiResponseDto } from 'src/common/dto/api-respose-dto';
+import { CreateUserDto } from '../user/dto/create-user.dto';
 
 
 @Injectable()
@@ -41,6 +42,7 @@ export class AuthService {
   if(!existingUser){
     throw new NotFoundException("Inavlid username or email")
   }
+  
 
 //   if (!existingUser.isVerified) {
 //   throw new ForbiddenException('Please verify your email first');
@@ -90,8 +92,10 @@ const {id ,first_name,last_name,email,token_version,user_status} = existingUser
 const accessToken  = this.jwtService.sign({
   sub:id,
   first_name,
-  last_name,email,
-  token_version,user_status
+  last_name,
+  email,
+  token_version,
+  user_status
 },
 {
     expiresIn: '7d', 
@@ -110,17 +114,57 @@ return {accessToken ,refreshToken}
   }
 
 
+async setAccessToken(refreshToken:string){
 
-  findAll() {
-    return `This action returns all auth`;
+  if(!refreshToken) throw new UnauthorizedException()
+
+  const verifyToken =  await  this.jwtService.verifyAsync(refreshToken,{
+    secret:this.configService.getOrThrow<string>('JWT_SECRET')
+  })
+
+
+  const  existingUser= await this.userRepository.findOne({
+    where :{
+      id:verifyToken.sub
+    }
+  })
+  if(!existingUser) throw new UnauthorizedException("User not found")
+
+  if(existingUser.token_version != verifyToken.token_version)  {
+    throw new UnauthorizedException("Token Version Not Same")
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  if(existingUser.user_status===USER_STATUS.BLOCKED){
+    throw new ForbiddenException('Your account has been blocked. Please contact support.');
+
   }
+  const {id,first_name,last_name,token_version,user_status ,email}=existingUser
+
+  const userData:accessToken={
+    sub:id,
+    first_name,
+    last_name,
+    token_version,
+    email,
+    user_status    
+  }
+  
+  const accessToken:string  = this.jwtService.sign( userData,
+ {
+    expiresIn: '7d', 
+  },
+
+)
+ return {
+    success: true,
+    message: "access token genarate successfully",
+    data:{
+      accessToken,
+  
+    }
+ }
 
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
+
+}
 }
