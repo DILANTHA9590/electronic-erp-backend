@@ -5,6 +5,7 @@ export interface accessToken {
     first_name:string,
     last_name?:string,
     token_version?:number,
+    email?:string
     user_status:USER_STATUS
 
 }
@@ -22,5 +23,5 @@ export interface TokenPayload {
   last_name?: string;
   email: string;
   token_version: number;
-  user_status: string;
+  user_status: USER_STATUS;
 }
