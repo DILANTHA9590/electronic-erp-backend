@@ -95,4 +95,144 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## License
 
+
+
+
+
+
+# 🖥️ Electronics Shop ERP (Internal Admin Panel)
+
+## 📌 Project Overview
+Electronics Shop ERP is an internal management system designed for a small electronics retail business.  
+The system allows Admins and Staff to manage products, stock, invoices, and payments efficiently with secure role-based authentication.
+
+This system is built using **NestJS (Backend)** and **React + TypeScript (Frontend)**.
+
+---
+
+## 🚀 Tech Stack
+
+### Frontend
+- React
+- TypeScript
+- Ant Design
+
+### Backend
+- NestJS
+- PostgreSQL
+- TypeORM
+- JWT Authentication
+- Redis (Rate Limiting)
+
+---
+
+## 🔐 Authentication & Security
+- JWT Access Tokens
+- Refresh Tokens
+- Role-Based Authorization (Admin / Staff)
+- Login Rate Limiting with Redis
+- Password Hashing (bcrypt)
+
+---
+
+## 📦 Core Features
+
+### 1️⃣ User & Role Management
+- Admin & Staff roles
+- Role-based route protection
+- Secure login system
+
+### 2️⃣ Category Management
+- Create categories (TV, Fridge, Washing Machine, etc.)
+- Edit / Delete categories
+
+### 3️⃣ Product Management
+- Add products with:
+  - Brand
+  - Model
+  - Price
+  - Stock quantity
+- Link products to categories
+
+### 4️⃣ Invoice Management
+- Create customer invoices
+- Add multiple products per invoice
+- Store product snapshot in InvoiceLine (to maintain historical data integrity)
+- Automatic stock reduction when invoice is created
+
+### 5️⃣ Payment System
+- Record payments (Cash / Bank)
+- Support partial payments
+- Installment tracking
+- Invoice status update (Pending / Partially Paid / Paid)
+
+### 6️⃣ Stock Management
+- Track stock movements (IN / OUT)
+- Auto-generate stock movement records after each sale
+- Accurate inventory calculation
+
+---
+
+## 🗄️ Database Structure
+
+### User
+- id
+- email
+- password
+- role_id
+
+### Role
+- id
+- name
+- permissions
+
+### Category
+- id
+- name
+
+### Product
+- id
+- category_id
+- brand
+- model
+- price
+- stock
+
+### Invoice
+- id
+- customer_name
+- total_amount
+- status
+
+### InvoiceLine
+- id
+- invoice_id
+- product_id
+- snapshot_json
+- qty
+- price
+- subtotal
+
+### Payment
+- id
+- invoice_id
+- amount
+- method
+- date
+- installment_number (optional)
+
+### StockMovement
+- id
+- product_id
+- type (IN / OUT)
+- qty
+- date
+
+---
+
+## ⚙️ Installation
+
+### 1️⃣ Clone Repository
+
+
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
