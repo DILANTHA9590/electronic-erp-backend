@@ -1,0 +1,16 @@
+import { User } from 'src/api/user/entities/user.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { USER_ROLE } from './role.enum';
+
+
+@Entity('roles')
+export class Role {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: true })
+  role_name: USER_ROLE; // ADMIN, STAFF
+
+  @OneToMany(() => User, (user) => user.role)
+  users: User[];
+}
