@@ -42,20 +42,26 @@ export class AuthController {
    
   }
 }
+
+
+
+@Post('refresh_token')
+getRefreshTOken(@Req() req:any){
+
+const  refreshToken:string = req.cookies.refreshToken
+return this.authService.setAccessToken(refreshToken)
+
+
+
+
+}
+
+
+
   @UseGuards(AuthGuard('jwt'))
   @Get("test")
   findAll(@Req() {user:{sub}}) {
     return sub
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
-  }
-
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
-  }
 }
