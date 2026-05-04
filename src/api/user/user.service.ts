@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -8,6 +8,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getRandomValues } from 'crypto';
 import * as argon2 from 'argon2';
 import { ApiResponseDto } from 'src/common/dto/api-respose-dto';
+import { SearchUsersDto } from './dto/search-users.dto';
+import { UuidParamDto } from 'src/common/dto/uuid-param';
+import { exit } from 'process';
 
 @Injectable()
 export class UserService {
@@ -58,7 +61,7 @@ async create(createUserDto: CreateUserDto):Promise<ApiResponseDto<null>>{
   await this.userRepository.save(newUser);
 
   return {
-    success: true,
+    succes: true,
     message: 'User created successfully',
     data:null
 
@@ -71,15 +74,42 @@ async create(createUserDto: CreateUserDto):Promise<ApiResponseDto<null>>{
 }
 
 
-  findAll() {
+getAllUsers(dto:SearchUsersDto) {
+
+  const {limit,search,page} = dto
+
+  }
+
+async findOne({id}: UuidParamDto):Promise<ApiResponseDto<User>> {
+
+
+  const existUser = await this.userRepository.findOne({
+    where:{id}
+  })
+
+  if(!existUser) throw new NotFoundException("No UserFound")
+   
+  return{
+    succes:true,
+    message:"user data retrive succssfully",
+    data:existUser
+  }  
+
+
+
+
+
 
 
     
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+
+  async findOne1(id: UuidParamDto) {
+  const isExist = await this.userRepository.findOne({
+    where: { id: id.id }
+  });
+}
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
