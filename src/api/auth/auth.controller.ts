@@ -57,7 +57,7 @@ return this.authService.setAccessToken(refreshToken)
 
 
 
-  @UseGuards(AuthGuard('jwt'))
+                                                                                                                                           @UseGuards(AuthGuard('jwt'))
   @Get("test")
   findAll(@Req() {user:{sub}}) {
     return sub
