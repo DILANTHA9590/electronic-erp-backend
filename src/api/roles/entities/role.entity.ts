@@ -6,11 +6,11 @@ import { USER_ROLE } from './role.enum';
 @Entity('roles')
 export class Role {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ unique: true })
-  role_name: USER_ROLE; // ADMIN, STAFF
+  role_name!: USER_ROLE; // ADMIN, STAFF
 
   @OneToMany(() => User, (user) => user.role)
-  users: User[];
+  users?: User[];
 }
