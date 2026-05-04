@@ -15,44 +15,44 @@ import { Role } from 'src/api/roles/entities/role.entity';
 export class User {
 
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
-  @Column()
-  first_name: string;
+  @Column({nullable:false})
+  first_name!: string;
 
   @Column({ nullable: true })
   last_name?: string;
 
   @Column({ unique: true })
-  user_name: string;
+  user_name!: string;
 
   @Column({ unique: true })
-  email: string;
+  email!: string;
 
   @Column({ default: false })
-  isVerified: boolean;
+  isVerified!: boolean;
 
   @Column()
-  password: string;
+  password!:string;
 
   @Column({
     type: 'enum',
     enum: USER_STATUS,
     default: USER_STATUS.PENDING
   })
-  user_status: USER_STATUS;
+  user_status!: USER_STATUS;
 
   @Column({ default: 0 })
-  token_version: number;
+  token_version!: number;
 
   @Column({ nullable: true })
-  salt?: number;
+  salt?: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  created_at!: Date;
 
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at!: Date;
   @ManyToOne(() => Role, role => role.users)
  @JoinColumn({ name: 'role_id' })
   role: Role;
