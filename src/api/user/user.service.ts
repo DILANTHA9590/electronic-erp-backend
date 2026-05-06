@@ -124,7 +124,7 @@ async findOne({id}: UuidParamDto):Promise<ApiResponseDto<User>> {
     where:{id}
   })
 
-  if(!existUser) throw new NotFoundException("No UserFound")
+  if(!existUser) throw new NotFoundException("No User Found")
    
   return{
     success:true,
@@ -163,7 +163,26 @@ async update(
   };
 }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+ async remove(id: string):Promise<ApiResponseDto<null>> {
+   
+  const existingUser = await this.userRepository.findOne({
+    where:{id}
+  })
+
+  if(!existingUser) throw new NotFoundException("No User Found")
+
+  await this.userRepository.remove(existingUser)
+
+  return{
+    success: true,
+    message: "User deleted successfully"
+
+  }
+   
+
+
+
+
+
   }
 }
