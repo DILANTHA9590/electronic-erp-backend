@@ -18,13 +18,13 @@ export class User {
   id!: string;
 
   @Column({nullable:false})
-  first_name!: string;
+  firstName!: string;
 
   @Column({ nullable: true })
-  last_name?: string;
+  lastName?: string;
 
   @Column({ unique: true })
-  user_name!: string;
+  userName!: string;
 
   @Column({ unique: true })
   email!: string;
@@ -40,20 +40,20 @@ export class User {
     enum: USER_STATUS,
     default: USER_STATUS.PENDING
   })
-  user_status!: USER_STATUS;
+  userStatus!: USER_STATUS;
 
   @Column({ default: 0 })
-  token_version!: number;
+  tokenVersion!: number;
 
   @Column({ nullable: true })
   salt?: string;
 
   @CreateDateColumn()
-  created_at!: Date;
+  createdAt!: Date;
 
   @UpdateDateColumn()
-  updated_at!: Date;
+  updatedAt!: Date;
   @ManyToOne(() => Role, role => role.users)
  @JoinColumn({ name: 'role_id' })
-  role: Role;
+  role!: Role;
 }
