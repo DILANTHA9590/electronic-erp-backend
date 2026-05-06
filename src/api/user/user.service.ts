@@ -11,6 +11,8 @@ import { ApiResponseDto } from 'src/common/dto/api-respose-dto';
 import { SearchUsersDto } from './dto/search-users.dto';
 import { UuidParamDto } from 'src/common/dto/uuid-param';
 import { exit } from 'process';
+import { watch } from 'fs';
+import { PaginatedDto } from 'src/common/dto/paginated.dto';
 
 @Injectable()
 export class UserService {
@@ -21,13 +23,13 @@ export class UserService {
     ){}
 
 async create(createUserDto: CreateUserDto):Promise<ApiResponseDto<null>>{
-  const { email, user_name, password } = createUserDto;
+  const { email, userName, password } = createUserDto;
 
   // 🔎 Check existing user (single DB query)
   const existingUser = await this.userRepository.findOne({
     where: [
       { email },
-      { user_name }
+      { userName }
     ],
   });
 
@@ -35,7 +37,7 @@ async create(createUserDto: CreateUserDto):Promise<ApiResponseDto<null>>{
     if (existingUser.email === email) {
       throw new ConflictException('Email already taken');
     }
-    if (existingUser.user_name === user_name) {
+    if (existingUser.userName === userName) {
       throw new ConflictException('Username already taken');
     }
   }
@@ -61,7 +63,7 @@ async create(createUserDto: CreateUserDto):Promise<ApiResponseDto<null>>{
   await this.userRepository.save(newUser);
 
   return {
-    succes: true,
+    success: true,
     message: 'User created successfully',
     data:null
 
@@ -74,9 +76,44 @@ async create(createUserDto: CreateUserDto):Promise<ApiResponseDto<null>>{
 }
 
 
-getAllUsers(dto:SearchUsersDto) {
+async getAllUsers(dto:SearchUsersDto):Promise<ApiResponseDto<PaginatedDto<User>>> {
 
-  const {limit,search,page} = dto
+const {limit,search,page,status} = dto
+
+
+const query = this.userRepository.createQueryBuilder('user')
+
+
+if(search){
+query.andWhere(`user.firstName LIKE :search OR user.lastName LIKE :search 
+OR user.email LIKE :search`,{search: `%${search}%`})
+}
+
+if(status){
+  query.andWhere("user.userStatus = :status",{status:status})
+}
+
+
+query.take(limit);
+
+query.skip((page -1) * limit);
+
+const [user,total]= await query.getManyAndCount();
+
+const totalPages = Math.ceil(total/limit);
+
+
+return{
+    success: true,
+    message: 'User created successfully',
+    data:{
+      items:user,
+      totalPages,
+      limit,
+    }
+
+  
+}
 
   }
 
@@ -90,30 +127,41 @@ async findOne({id}: UuidParamDto):Promise<ApiResponseDto<User>> {
   if(!existUser) throw new NotFoundException("No UserFound")
    
   return{
-    succes:true,
+    success:true,
     message:"user data retrive succssfully",
     data:existUser
   }  
 
 
-
-
-
-
-
-    
   }
 
 
-  async findOne1(id: UuidParamDto) {
-  const isExist = await this.userRepository.findOne({
-    where: { id: id.id }
+
+async update(
+  id: string,
+  updateUserDto: UpdateUserDto
+): Promise<ApiResponseDto<null>> {
+
+  const existingUser = await this.userRepository.findOne({
+    where: { id }
   });
-}
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  if (!existingUser) {
+    throw new NotFoundException("User not found");
   }
+
+  const updatedUser = this.userRepository.merge(
+    existingUser,
+    updateUserDto
+  );
+
+  await this.userRepository.save(updatedUser);
+
+  return {
+    success: true,
+    message: "User updated successfully"
+  };
+}
 
   remove(id: number) {
     return `This action removes a #${id} user`;
