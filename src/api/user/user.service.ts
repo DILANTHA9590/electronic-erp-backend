@@ -82,6 +82,7 @@ const {limit,search,page,status} = dto
 
 
 const query = this.userRepository.createQueryBuilder('user')
+              .leftJoinAndSelect("user.role","role")
 
 
 if(search){
@@ -121,7 +122,8 @@ async findOne({id}: UuidParamDto):Promise<ApiResponseDto<User>> {
 
 
   const existUser = await this.userRepository.findOne({
-    where:{id}
+    where:{id},
+    relations:["role"]
   })
 
   if(!existUser) throw new NotFoundException("No User Found")
