@@ -1,7 +1,7 @@
 
 export class PaginatedDto<T> {
   items?: T[];
-  total?: number;
+  totalPages?: number;
   page?: number;
   limit?: number;
 }
