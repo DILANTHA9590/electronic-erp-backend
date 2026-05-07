@@ -35,21 +35,17 @@ export class AuthService {
   const existingUser = await this.userRepository.findOne({
     where:[
       {email:login},
-      {user_name:login},
+      {userName:login},
     ]
   })
 
-  if(!existingUser){
-    throw new NotFoundException("Inavlid username or email")
-  }
+  if(!existingUser)  throw new NotFoundException("Inavlid username or email")
   
-
 //   if (!existingUser.isVerified) {
 //   throw new ForbiddenException('Please verify your email first');
 // }
 
-
- if (existingUser.user_status === USER_STATUS.BLOCKED) {
+ if (existingUser.userStatus === USER_STATUS.BLOCKED) {
   throw new ForbiddenException('Your account has been blocked. Contact support.');
 }
 
@@ -60,9 +56,9 @@ const checkPassowrd = await argon2.verify(existingUser.password, customPassword)
 if(!checkPassowrd){
   throw new NotFoundException("Invalid password")
 }
- const {id ,first_name,last_name,email,token_version,user_status} = existingUser
+ const {id ,firstName,lastName,email,tokenVersion,userStatus} = existingUser
 
- const {refreshToken,accessToken} = this.genarateTokens({id ,first_name,last_name,email,token_version,user_status})
+ const {refreshToken,accessToken} = this.genarateTokens({id ,firstName,lastName,email,tokenVersion,userStatus})
 
  
 console.log("refresh token",refreshToken)
@@ -87,15 +83,15 @@ console.log("accesstoken",accessToken)
 
   //genarate access token  and refsh token
 private genarateTokens(existingUser:TokenPayload){
-const {id ,first_name,last_name,email,token_version,user_status} = existingUser
+const {id ,firstName,lastName,email,tokenVersion,userStatus} = existingUser
 
 const accessToken  = this.jwtService.sign({
   sub:id,
-  first_name,
-  last_name,
+  firstName,
+  lastName,
   email,
-  token_version,
-  user_status
+  tokenVersion,
+  userStatus
 },
 {
     expiresIn: '7d', 
@@ -104,7 +100,7 @@ const accessToken  = this.jwtService.sign({
 )
 
 const refreshToken = this.jwtService.sign(
-  { sub: id, token_version },
+  { sub: id, tokenVersion },
   {
     expiresIn: '7d', 
   },
@@ -130,23 +126,24 @@ async setAccessToken(refreshToken:string):Promise<ApiResponseDto<{ accessToken: 
   })
   if(!existingUser) throw new UnauthorizedException("User not found")
 
-  if(existingUser.token_version != verifyToken.token_version)  {
+  if (existingUser.userStatus === USER_STATUS.BLOCKED) {
+  throw new ForbiddenException('Your account has been blocked. Contact support.');
+}
+
+  if(existingUser.tokenVersion != verifyToken.tokenVersion)  {
     throw new UnauthorizedException("Token Version Not Same")
   }
 
-  if(existingUser.user_status===USER_STATUS.BLOCKED){
-    throw new ForbiddenException('Your account has been blocked. Please contact support.');
 
-  }
-  const {id,first_name,last_name,token_version,user_status ,email}=existingUser
+  const {id,firstName,lastName,tokenVersion,userStatus ,email}=existingUser
 
   const userData:accessToken={
     sub:id,
-    first_name,
-    last_name,
-    token_version,
+    firstName,
+    lastName,
+    tokenVersion,
     email,
-    user_status    
+    userStatus    
   }
   
   const accessToken:string  = this.jwtService.sign( userData,
