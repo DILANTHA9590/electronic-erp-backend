@@ -71,5 +71,5 @@ export class CreateUserDto {
   })
   @IsOptional()
   @IsEnum(USER_STATUS, { message: 'Invalid user status value' })
-  user_status?: USER_STATUS;
+  userStatus?: USER_STATUS;
 }
