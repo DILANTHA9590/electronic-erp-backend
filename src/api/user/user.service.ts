@@ -161,7 +161,8 @@ async update(
 
   return {
     success: true,
-    message: "User updated successfully"
+    message: "User updated successfully",
+    data:null
   };
 }
 
@@ -177,7 +178,8 @@ async update(
 
   return{
     success: true,
-    message: "User deleted successfully"
+    message: "User deleted successfully",
+    data:null
 
   }
    
