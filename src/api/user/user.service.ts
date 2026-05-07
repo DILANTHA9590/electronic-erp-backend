@@ -82,7 +82,18 @@ const {limit,search,page,status} = dto
 
 
 const query = this.userRepository.createQueryBuilder('user')
-              .leftJoinAndSelect("user.role","role")
+.leftJoinAndSelect("user.role","role")
+.select([
+ 'user.id' ,
+'user.firstName',
+'user.lastName',
+'user.email',
+'user.userName',
+'user.isVerified',
+'user.userStatus',
+'role.id',
+'role.roleName'
+  ]);
 
 
 if(search){
@@ -115,6 +126,10 @@ return{
 
   
 }
+
+
+
+
 
   }
 
