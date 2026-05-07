@@ -9,7 +9,7 @@ export class Role {
   id!: number;
 
   @Column({ unique: true })
-  role_name!: USER_ROLE; // ADMIN, STAFF
+  roleName!: USER_ROLE; // ADMIN, STAFF
 
   @OneToMany(() => User, (user) => user.role)
   users?: User[];
