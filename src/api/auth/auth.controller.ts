@@ -7,9 +7,11 @@ import { ConfigService } from '@nestjs/config';
 import { ApiResponseDto } from 'src/common/dto/api-respose-dto';
 import { LoginResponseDto } from './dto/login-repose-dto';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 
 @Controller('auth')
+@ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService,
             private configService: ConfigService,
@@ -18,12 +20,23 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK) // 200
+  @ApiOperation({
+    summary: 'Login user',
+    description: 'Authenticate user and return access & refresh tokens'
+  })
+
+  @ApiBody({
+    description: 'Login successful',
+    type: AuthDto
+  })
+
  async create(@Body() createAuthDto:AuthDto,
   @Res({ passthrough: true }) res: Response):Promise<ApiResponseDto<LoginResponseDto>> {
-   const  respose = await this.authService.loginUser(createAuthDto);
- const isProduction = this.configService.getOrThrow<string>("NODE_ENV") ==="production"
+   const  response = await this.authService.loginUser(createAuthDto);
+   
+  const isProduction = this.configService.getOrThrow<string>("NODE_ENV") ==="production"
 //🔹 Set refresh token in HTTP-only cookie
-   res.cookie('refreshToken',respose.data.refreshToken,{
+   res.cookie('refreshToken',response.data.refreshToken,{
     httpOnly:true,
     secure:isProduction,
     sameSite:isProduction ? 'strict' : 'lax',//🔴
@@ -36,8 +49,8 @@ export class AuthController {
     message: "Login successful",
     
     data:{
-    accessToken:respose.data.accessToken,
-    refreshToken:respose.data.refreshToken
+    accessToken:response.data?.accessToken,
+    refreshToken:response.data?.refreshToken
     }
    
   }
