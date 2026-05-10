@@ -12,5 +12,5 @@ export const AppDataSource = new DataSource({
 // migrations: [__dirname + '/migrations/*{.ts,.js}'],//production
   entities: ['src/**/*.entity.ts'],//devlopmnet
   migrations: ['src/migrations/*.ts'],//devlopmnet 
-  synchronize: false,
+  synchronize: true,
 });

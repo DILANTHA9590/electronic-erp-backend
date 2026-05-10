@@ -27,7 +27,7 @@ import { RolesModule } from './api/roles/roles.module';
         password: configService.getOrThrow('DB_PASS'),
         database: configService.getOrThrow('DB_NAME'),
         autoLoadEntities: true,
-        synchronize: false,
+        synchronize: true,
         logging: ['query', 'error'],//dev
     // logging: ['error'],//prodction
         retryAttempts: 5, 
