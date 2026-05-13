@@ -199,9 +199,13 @@ async update(
   }
    
 
-
-
-
-
   }
+
+
+
+async  assignUserRole(id:string ){
+
+
+
+}
 }

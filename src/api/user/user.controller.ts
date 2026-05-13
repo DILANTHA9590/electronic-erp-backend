@@ -9,6 +9,8 @@ import {
   HttpStatus,
   HttpCode,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 
 import {
@@ -23,9 +25,11 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UuidParamDto } from 'src/common/dto/uuid-param';
 import { SearchUsersDto } from './dto/search-users.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Users')
 @Controller('user')
+@UseGuards(AuthGuard('jwt'))
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -42,6 +46,10 @@ export class UserController {
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
+
+
+
+
 @Get('all')
 
   @ApiOperation({
@@ -117,5 +125,20 @@ getAll(
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
   }
+
+
+  @Post("assign_role")
+   assignUserRole(@Req() req){
+    console.log("req user❌❌❌❌❌❌❌❌❌❌",req.user
+      
+    );
+
+    return
+   }
+
+
+
+  
+
 
 }
