@@ -48,6 +48,9 @@ export class User {
   @Column({ nullable: true })
   salt?: string;
 
+  @Column({nullable:true})
+  assignedRoleBy?:string
+
   @CreateDateColumn()
   createdAt!: Date;
 
