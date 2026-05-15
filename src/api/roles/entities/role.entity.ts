@@ -6,7 +6,7 @@ import { USER_ROLE } from './role.enum';
 @Entity('roles')
 export class Role {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id!: string;
 
   @Column({ unique: true })
   roleName!: USER_ROLE; // ADMIN, STAFF
