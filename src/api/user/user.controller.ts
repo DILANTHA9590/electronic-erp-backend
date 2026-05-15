@@ -26,6 +26,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UuidParamDto } from 'src/common/dto/uuid-param';
 import { SearchUsersDto } from './dto/search-users.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { AssignUserRoleDto } from './dto/assign-user_role.dto';
+import { ApiResponseDto } from 'src/common/dto/api-respose-dto';
+import { User } from './entities/user.entity';
+import { PaginatedDto } from 'src/common/dto/paginated.dto';
 
 @ApiTags('Users')
 @Controller('user')
@@ -43,11 +47,10 @@ export class UserController {
     status: 201,
     description: 'User created successfully',
   })
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Body() createUserDto: CreateUserDto):Promise<ApiResponseDto<null>> {
+
     return this.userService.create(createUserDto);
   }
-
-
 
 
 @Get('all')
@@ -59,7 +62,7 @@ export class UserController {
 
 getAll(
   @Query() dto: SearchUsersDto
-) {
+):Promise<ApiResponseDto<PaginatedDto<User>>> {
   return this.userService.getAllUsers(dto);
 }
   @Get(':id')
@@ -80,11 +83,17 @@ getAll(
     status: 404,
     description: 'User not found',
   })
-  findOne(@Param('id') id: UuidParamDto) {
+  findOne(@Param('id') id: UuidParamDto):Promise<ApiResponseDto<User>> {
     return this.userService.findOne(id);
   }
 
+  @Patch("assign_role")
+   assignUserRole(@Body() dto:AssignUserRoleDto, @Req() req:any ):Promise<ApiResponseDto<null>>{
+    
+   return this.userService.assignUserRole(dto,req.user)
 
+
+   }
 
 
   @Patch(':id')
@@ -126,15 +135,6 @@ getAll(
     return this.userService.remove(id);
   }
 
-
-  @Post("assign_role")
-   assignUserRole(@Req() req){
-    console.log("req user❌❌❌❌❌❌❌❌❌❌",req.user
-      
-    );
-
-    return
-   }
 
 
 
