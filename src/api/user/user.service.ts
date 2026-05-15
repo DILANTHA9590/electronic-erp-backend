@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,12 +13,18 @@ import { UuidParamDto } from 'src/common/dto/uuid-param';
 import { exit } from 'process';
 import { watch } from 'fs';
 import { PaginatedDto } from 'src/common/dto/paginated.dto';
+import { Role } from '../roles/entities/role.entity';
+import { TokenPayload } from '../auth/interfaces/auth.interface';
+import { JwtPayloadDto } from '../auth/dto/jwtPayload';
+import { AssignUserRoleDto } from './dto/assign-user_role.dto';
 
 @Injectable()
 export class UserService {
     constructor(
       @InjectRepository
       (User) private readonly userRepository: Repository<User>,
+      @InjectRepository
+      (Role) private readonly roleRepository: Repository<Role>,
       private configService: ConfigService
     ){}
 
@@ -203,9 +209,87 @@ async update(
 
 
 
-async  assignUserRole(id:string ){
+async  assignUserRole(dto:AssignUserRoleDto ,payload:JwtPayloadDto):Promise<ApiResponseDto<null>>{
+
+  const {sub}=payload // req user id
+
+
+   const existingUser = await  this.userRepository.findOne({
+
+    where:{
+      id:dto.userId
+    }
+    
+   })
+
+
+    if(!existingUser){
+    throw new NotFoundException("User not found")
+   }
+
+   const checkexitingRole = await this.roleRepository.findOne({
+    where:{
+      id:dto.roleId
+    }
+   })
+
+ 
+   if(!checkexitingRole){
+      throw new BadRequestException('Invalid role assignment');
+}
+
+
+const  create = this.userRepository.create(
+    {
+    id:existingUser.id,
+    assignedRoleBy:sub,
+    role:{
+      id:dto.roleId
+    } as Role,    
+  }
+
+)
+
+await this.userRepository.save(create);
+
+
+return{
+  success:true,
+  message: "Role assigned successfully",
+  data:null
+}
+
+
+
+
+  
+
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+   }
+
+
+
+
+
+
+
+
+
 
 
 
 }
-}
+
