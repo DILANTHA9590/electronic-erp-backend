@@ -57,6 +57,6 @@ export class User {
   @UpdateDateColumn()
   updatedAt!: Date;
   @ManyToOne(() => Role, role => role.users)
- @JoinColumn({ name: 'role_id' })
+  @JoinColumn({ name: 'role_id' })
   role!: Role;
 }
