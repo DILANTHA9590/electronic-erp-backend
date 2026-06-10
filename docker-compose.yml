@@ -4,10 +4,10 @@ services:
   backend:
     build: .
     container_name: electronic_erp_backend
-    image: dilanthanayanajith/agriculture_backend:v1
+    image: dilanthanayanajith/electronic:v2
 
     ports:
-      - "5000:5000"
+      - "5003:3000"
 
     env_file:
       - .env
