@@ -35,3 +35,19 @@ jobs:
           tags: |
             dilanthanayanajith/electronic:${{ env.SHORT_SHA }}
             dilanthanayanajith/electronic:latest
+
+
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1
+
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+          script: |
+            cd ~/electronic-erp
+
+            sudo docker pull dilanthanayanajith/electronic:latest
+
+            sudo docker compose up -d    
