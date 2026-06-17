@@ -33,5 +33,5 @@ jobs:
           push: true
 
           tags: |
-            dilanthanayanajith/electronic:${{ env.SHORT_SHA }}
-            dilanthanayanajith/electronic:latest
+            dilanthanayanajith/electronic1:${{ env.SHORT_SHA }}
+            dilanthanayanajith/electronic1:latest
