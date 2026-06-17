@@ -9,7 +9,7 @@ import {
   JoinColumn
 } from 'typeorm';
 import { USER_STATUS } from './user-status.enum';
-import { Role } from 'src/api/roles/entities/role.entity';
+import { Role } from '../../roles/entities/role.entity';
 
 @Entity('users')
 export class User {

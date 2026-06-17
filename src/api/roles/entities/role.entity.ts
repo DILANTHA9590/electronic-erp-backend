@@ -1,4 +1,4 @@
-import { User } from 'src/api/user/entities/user.entity';
+import { User } from '../../user/entities/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { USER_ROLE } from './role.enum';
 
