@@ -54,6 +54,9 @@ services:
       timeout: 5s
       retries: 5
 
+  healthcheck:
+  test: ["CMD", "curl", "-f", "http://localhost:${PORT}/health"]  
+
 volumes:
   mysql_data:
 

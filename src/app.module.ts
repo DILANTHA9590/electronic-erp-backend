@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RolesModule } from './api/roles/roles.module';
+import { HealthModule } from './api/health/health.module';
 
 
 
@@ -38,6 +39,7 @@ import { RolesModule } from './api/roles/roles.module';
     UserModule,
     AuthModule,
     RolesModule,
+    HealthModule,
   ]
 
 })
